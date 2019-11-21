@@ -8,3 +8,7 @@ The data has to be cleaned and preprocessed first before feeding to our training
 
 ## Training Model
 GRU is used for training the model with AdamOptimizer. Word embeddings for the model are taken from the open dataset Numberbatch available from ConceptNet- https://github.com/commonsense/conceptnet-numberbatch. 
+
+## Testing Model
+
+## Output
