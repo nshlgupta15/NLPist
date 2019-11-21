@@ -1,22 +1,18 @@
-import time
 import numpy as np
 import pandas as pd
-import pickle
 from pandas_ml import ConfusionMatrix
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from collections import namedtuple
-from tokenizer import Tokenizer
-import embedding_utils as emb_utils
-import utilities as utils
-import argparse
-from contractions import get_contractions
 import sys
 
-task = sys.argv[1]
-embeddingPath = sys.argv[2]
-preprocessedDatafile = sys.argv[3]
+# task = str(sys.argv[1])
+# embeddingPath = str(sys.argv[2])
+# preprocessedDatafile = str(sys.argv[3])
+task = "test"
+embeddingPath = "numberbatch-en.txt"
+preprocessedDatafile = "preProcessed_data.csv"
 
 preprocessedData = pd.read_csv(preprocessedDatafile)
 
@@ -28,19 +24,18 @@ hyperparameters = {
     'dropoutProb': 0.8,
     'dimEmbeddings': 300,
     'validationData': 0.2,
-    'ispickle': True,
-    'isResume': False,
     'learningRateDecay': 0.95,
     'learningRate': 0.005,
-    'shuffle': False,
     'checkUpdatesize': 500
 }
+
 
 embeddingDict = dict()
 embeddingFile = open(embeddingPath, encoding='utf-8')
 for f in embeddingFile:
     data = f.split(' ')
     embeddingDict[data[0]] = np.asarray(data[1:], dtype='float32')
+
 
 textData = preprocessedData.text
 
@@ -56,7 +51,6 @@ for line in textData:
 cnt = 0
 indexes = dict()
 
-cnt = 0
 for w in wordCnt:
     if wordCnt[w] >= 20 or w in embeddingDict:
         indexes[w] = cnt
@@ -69,12 +63,13 @@ embeddingMatrix = np.zeros((len(indexes), hyperparameters['dimEmbeddings']), dty
 
 for w in indexes:
     if w in embeddingDict:
-            embeddingMatrix[cnt] = embeddingDict[w]
+        embeddingMatrix[cnt] = embeddingDict[w]
     else:
         tempembedding = np.array(np.random.uniform(-1.0, 1.0, hyperparameters['dimEmbeddings']))
         embeddingDict[w] = tempembedding
         embeddingMatrix[cnt] = tempembedding
 
+print(embeddingMatrix)
 
 numSequence = []
 
@@ -166,12 +161,8 @@ print(graph_location)
 trainModelWriter = tf.summary.FileWriter(graph_location)
 trainModelWriter.add_graph(train_graph)
 
-savepoint = "./saves/best_model.ckpt"
+savepoint = "./saves/best_model2.ckpt"
 
-# utils.pickle_files("./data/pickles/balanced_reviews.p", df_balanced)
-# utils.pickle_files("./data/pickles/category_ratings.p", ratings_cat)
-# utils.pickle_files("./data/pickles/word_embedding_matrix.p", word_embedding_matrix)
-# utils.pickle_files("./data/pickles/tokenizer.p", tokenizer)
 
 def getBatches(traind, trainl, batchSize):
 
@@ -180,6 +171,7 @@ def getBatches(traind, trainl, batchSize):
         end = start + batchSize
         pad_batch_x = np.asarray(getPadding(traind[start:end], indexes))
         yield pad_batch_x, trainl[start:end]
+
 
 def getPadding(batch):
     temp = []
@@ -191,6 +183,7 @@ def getPadding(batch):
                                                              padding='post',
                                                              value=indexes['<pad>'])
 
+
 def getBatchesTest(testd, batchSize):
     for i in range(0, len(testd)//batchSize):
         start = i * batchSize
@@ -198,12 +191,12 @@ def getBatchesTest(testd, batchSize):
         pad_batch_x = np.asarray(getPadding(testd[start:end], indexes))
         yield pad_batch_x
 
-if task == 'Train':
+
+if task == "Train":
 
     resultSummary = []
 
     min_learning_rate, stop_early, stop = 0.0005, 0, 3
-
 
     session = tf.Session(graph=train_graph)
     session.run(tf.global_variables_initializer())
