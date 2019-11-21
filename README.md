@@ -15,11 +15,11 @@ Expected Output will be a processed csv file with name "processedFile.csv"
 processedFile.csv
 
 
-##Model 
+## Model 
 
 We have comon file to either train mode or test model or both. It takes our processedFile.csv and the type what you want to do with file.
 
-## Training Model
+### Training Model
 GRU is used for training the model with AdamOptimizer. Word embeddings for the model are taken from the open dataset Numberbatch available from ConceptNet- https://github.com/commonsense/conceptnet-numberbatch. 
 
 Command to run model file for training. Type is "train"
@@ -28,7 +28,7 @@ python3 model.py train
 
 Expected Output will be a folders inside which model will be saved.
 
-## Testing Model
+### Testing Model
 
 Command to run model file for testing. Type is "test"
 
