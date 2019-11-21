@@ -61,15 +61,15 @@ indexes["<pad>"] = cnt+1
 
 embeddingMatrix = np.zeros((len(indexes), hyperparameters['dimEmbeddings']), dtype=np.float32)
 
-for w in indexes:
+for w,i in indexes.items():
     if w in embeddingDict:
-        embeddingMatrix[cnt] = embeddingDict[w]
+        embeddingMatrix[i] = embeddingDict[w]
     else:
         tempembedding = np.array(np.random.uniform(-1.0, 1.0, hyperparameters['dimEmbeddings']))
         embeddingDict[w] = tempembedding
-        embeddingMatrix[cnt] = tempembedding
+        embeddingMatrix[i] = tempembedding
 
-print(embeddingMatrix)
+
 
 numSequence = []
 
@@ -102,6 +102,7 @@ with train_graph.as_default():
         bias = tf.Variable(tf.constant(0.1, shape=[categories]))
 
     embeddings = embeddingMatrix
+    print(embeddings.shape)
     embs = tf.nn.embedding_lookup(embeddings, input_data)
 
     with tf.name_scope("RNN_Layers"):

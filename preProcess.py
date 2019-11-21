@@ -8,13 +8,13 @@ import pandas
 from nltk.corpus import stopwords
 from langdetect import detect
 
-business_input = "/Users/anshulgupta/Desktop/DataMining/business.json"
-# business_input = str(sys.argv[1])
+# business_input = "/Users/anshulgupta/Desktop/DataMining/business.json"
+business_input = str(sys.argv[1])
 
-review_input = "/Users/anshulgupta/Desktop/DataMining/review.json"
-# review_input = str(sys.argv[2])
+# review_input = "/Users/anshulgupta/Desktop/DataMining/review.json"
+review_input = str(sys.argv[2])
 
-output = "newOutput2.csv"
+output = "processedFile.csv"
 # output file
 
 
@@ -156,7 +156,7 @@ for line in review_input_file:
         input_stars.append(star_rating)
         reviews_count += 1
 
-    if reviews_count == 100000:
+    if reviews_count == 150000:
         break
 
     if reviews_count % 10000 == 0:
@@ -173,8 +173,9 @@ df_final_stars['len'] = df_final_stars.text.str.len()
 df_final_stars = df_final_stars[df_final_stars['len'].between(10, 4000)]
 col2 = ['stars']
 lowest_count = df_final_stars.groupby(col2).apply(lambda x: x.shape[0]).min()
-df_final = df_final_stars.groupby(col2).apply(
-    lambda x: x.sample(lowest_count)).drop(col2, axis=1).reset_index().set_index('level_1').sort_index(inplace=True)
+df_out = df_final_stars.groupby(col2).apply(
+    lambda x: x.sample(lowest_count)).drop(col2, axis=1).reset_index().set_index('level_1')
 
-df_final.to_csv(output, encoding='utf-8')
-print(len(df_final['stars']))
+df_out.sort_index(inplace=True)
+df_out.to_csv(output, encoding='utf-8')
+print(len(df_out['stars']))
