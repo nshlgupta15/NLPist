@@ -41,4 +41,4 @@ python3 model.py test
 
 Expected Output will be the accuracy printed out onto the console and confusion matrix will also be displayed.
 
-Test accuracy is: 0.5645978009259259
+> Test accuracy is: 0.5645978009259259
