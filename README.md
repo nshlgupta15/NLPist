@@ -38,9 +38,8 @@ Command to run model file for testing. Type is "test"
 python3 model.py test
 ```
 
-Expected Output will be a Accuracy printed and you should inside which model will be saved. 
-
-
 ## Output
+
+Expected Output will be the accuracy printed out onto the console and confusion matrix will also be displayed.
 
 Test accuracy is: 0.5645978009259259
